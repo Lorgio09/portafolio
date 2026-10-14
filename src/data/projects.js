@@ -1,12 +1,16 @@
 // Para añadir un proyecto, agrega un objeto a esta lista.
 // Los campos que no existan (repo, demo, role...) simplemente no se muestran.
 // Las capturas van en public/img/ y se referencian como '/img/nombre.png'.
+// tone: color de la franja del proyecto ('ink', 'river' o 'glass').
+// frame: marco de las capturas ('browser' o 'phone').
 export const projects = [
   {
     id: 'alerta-medica',
     problemLine: 'Una ambulancia que llega tarde',
     title: 'Alerta Médica Bolivia',
     type: 'Aplicación web',
+    tone: 'ink',
+    frame: 'browser',
     status: 'MVP en desarrollo',
     summary:
       'Plataforma web para reportar y coordinar emergencias médicas, con ubicación GPS, fotos analizadas por inteligencia artificial y despacho de ambulancias.',
@@ -33,7 +37,7 @@ export const projects = [
     note:
       'Es un MVP: el repositorio documenta una integración con Google Cloud Vertex AI, pero no todas las funciones están terminadas.',
     learned: null,
-    captures: [{ src: '/img/alerta-medica-mapa.png', alt: 'Mapa con emergencias reportadas y ambulancias disponibles' }],
+    captures: [{ src: '/img/alerta-medica-mapa.png', alt: 'Primer paso del reporte: el mapa toma la ubicación GPS de la emergencia' }],
     links: { repo: 'https://github.com/CodeWithElias/hackathon-ai', demo: null },
   },
   {
@@ -41,6 +45,8 @@ export const projects = [
     problemLine: 'Un bache que nadie reporta',
     title: 'App de reportes urbanos',
     type: 'Full stack y aplicación móvil',
+    tone: 'river',
+    frame: 'phone',
     status: 'En desarrollo',
     summary:
       'App Android y API para que los ciudadanos de Santa Cruz de la Sierra registren y sigan problemas urbanos como baches y calles deterioradas.',
@@ -67,8 +73,7 @@ export const projects = [
     ],
     captures: [
       { src: '/img/reportes-login.png', alt: 'Pantalla de inicio de sesión' },
-      { src: '/img/reportes-registro.png', alt: 'Pantalla de registro' },
-      { src: '/img/reportes-nuevo.png', alt: 'Pantalla para crear un reporte' },
+      { src: '/img/reportes-nuevo.png', alt: 'Pantalla para elegir el tipo de reporte: bache, basura, luminaria y otros' },
     ],
     links: { repo: null, demo: null }, // Agrega el enlace al repositorio de GitHub.
   },
@@ -77,6 +82,8 @@ export const projects = [
     problemLine: 'Un stock que no cuadra',
     title: 'Piraí Store',
     type: 'Sistema de gestión en producción',
+    tone: 'glass',
+    frame: 'browser',
     status: 'En uso diario',
     summary:
       'Sistema de gestión para un negocio real de envases de vidrio: ventas, compras, inventario, caja de los socios y costos reales.',
@@ -105,7 +112,7 @@ export const projects = [
       'Verificar las pruebas: escribí 316 pruebas automáticas y metí errores a propósito para comprobar que las pruebas los detectaran.',
       'Desplegar con seguridad: migraciones que solo agregan y respaldo antes de cada cambio.',
     ],
-    captures: [{ src: '/img/pirai-venta.gif', alt: 'Una venta: se elige el producto, aparece la ganancia y se confirma' }],
+    captures: [{ src: '/img/pirai-inicio.png', alt: 'Pantalla de inicio: ingresos de la semana y stock actual' }],
     links: { repo: null, demo: null }, // Agrega el enlace al repositorio limpio de GitHub.
   },
 ]

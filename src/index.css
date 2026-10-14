@@ -1,17 +1,89 @@
 @import "tailwindcss";
 
-@theme {
-  --color-paper: #eef3f0;
-  --color-ink: #10261f;
-  --color-river: #0f6b63;
-  --color-glass: #cfe3da;
-  --color-signal: #d8452b;
+/* Tema oscuro. Los nombres se mantienen: paper es el fondo, ink el texto,
+   river el acento, glass los paneles y signal el rojo (solo plaza y foco). */
+@theme static {
+  --color-paper: #09130f;
+  --color-ink: #e6eee8;
+  --color-river: #5ed3b5;
+  --color-glass: #13231d;
+  --color-signal: #ff7152;
 
   --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Intensidad del mapa de fondo. Cambia estos valores a mano para ajustarlo.
+   Estos son los de la vista Proyectos; los de "Sobre mí" están más abajo, en .mapa-tenue. */
+:root {
+  /* Brillo de las calles del mapa. 1 = original; más alto = calles más visibles. */
+  --mapa-brillo: 1.5;
+  /* Contraste de las calles del mapa. 1 = original; más alto = calles más marcadas. */
+  --mapa-contraste: 1.25;
+  /* Opacidad del velo oscuro arriba del todo (0% = mapa limpio, 100% = mapa tapado). */
+  --mapa-velo-arriba: 30%;
+  /* Opacidad del velo oscuro a media altura. Abajo el velo siempre termina en el fondo sólido. */
+  --mapa-velo-medio: 15%;
+  /* Opacidad del degradado lateral que protege el texto, en el borde izquierdo. */
+  --mapa-velo-texto: 75%;
+  /* Hasta dónde llega el degradado lateral (ancho de pantalla). Con 60 % los estados de las
+     filas quedaban sin cubrir sobre el centro de la ciudad, que es la zona más clara. */
+  --mapa-velo-texto-alcance: 80%;
+}
+
+/* En celular el texto ocupa todo el ancho y el degradado lateral no lo cubre:
+   el velo vertical es más fuerte para que se lea. */
+@media (width < 48rem) {
+  :root {
+    --mapa-velo-arriba: 50%;
+    --mapa-velo-medio: 55%;
+  }
+}
+
+/* Registradas para que el cambio entre vistas se pueda animar. */
+@property --mapa-brillo {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1.5;
+}
+@property --mapa-contraste {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1.25;
+}
+@property --mapa-velo-arriba {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 30%;
+}
+@property --mapa-velo-medio {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 15%;
+}
+@property --mapa-velo-texto {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 75%;
+}
+
+/* Caja común de la barra, las vistas y el pie: hasta 1400px, con márgenes que crecen con la pantalla. */
+@utility caja {
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: 20px;
+
+  @media (width >= 48rem) {
+    padding-inline: 40px;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 64px;
+  }
 }
 
 html {
+  color-scheme: dark;
   scroll-behavior: smooth;
   scroll-padding-top: 1.5rem;
 }
@@ -20,7 +92,7 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-body);
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
@@ -32,12 +104,17 @@ h3 {
   letter-spacing: -0.02em;
 }
 
+::selection {
+  background: var(--color-river);
+  color: var(--color-paper);
+}
+
 :focus-visible {
   outline: 3px solid var(--color-signal);
   outline-offset: 3px;
 }
 
-/* Un solo momento de movimiento: las tres líneas del inicio aparecen en cascada. */
+/* Animación de entrada: las filas del libro de caja aparecen en cascada una vez. */
 @keyframes aparecer {
   from {
     opacity: 0;
@@ -53,11 +130,161 @@ h3 {
   animation: aparecer 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+/* Fundido corto al mostrar una vista (Proyectos o Sobre mí). */
+@keyframes vista-entrar {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.vista {
+  animation: vista-entrar 0.22s ease both;
+}
+
+/* Mapa de fondo de la portada */
+@keyframes mapa-aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.mapa-fondo {
+  animation: mapa-aparecer 1.6s ease both;
+  transition:
+    --mapa-brillo 0.4s ease,
+    --mapa-contraste 0.4s ease,
+    --mapa-velo-arriba 0.4s ease,
+    --mapa-velo-medio 0.4s ease,
+    --mapa-velo-texto 0.4s ease;
+}
+
+/* Vista "Sobre mí": el mapa más tenue para leer texto largo. */
+.mapa-tenue {
+  --mapa-brillo: 1.1;
+  --mapa-velo-arriba: 55%;
+  --mapa-velo-medio: 35%;
+  --mapa-velo-texto: 80%;
+}
+
+@media (width < 48rem) {
+  .mapa-tenue {
+    --mapa-velo-arriba: 60%;
+    --mapa-velo-medio: 60%;
+  }
+}
+
+/* Velo vertical: deja ver el mapa arriba y termina en el fondo sólido para empalmar con la página. */
+.mapa-velo {
+  background: linear-gradient(
+    to bottom,
+    rgb(9 19 15 / var(--mapa-velo-arriba)) 0%,
+    rgb(9 19 15 / var(--mapa-velo-medio)) 45%,
+    var(--color-paper) 100%
+  );
+}
+
+/* Degradado lateral: oscurece el lado izquierdo, donde van el título y el texto. */
+.mapa-velo-texto {
+  background: linear-gradient(
+    to right,
+    rgb(9 19 15 / var(--mapa-velo-texto)) 0%,
+    rgb(9 19 15 / calc(var(--mapa-velo-texto) * 0.6)) calc(var(--mapa-velo-texto-alcance) * 0.625),
+    transparent var(--mapa-velo-texto-alcance)
+  );
+}
+
+/* Profundidad: el mapa se mueve un poco en sentido contrario al mouse. */
+.mapa-capa {
+  transform: translate(calc(var(--px, 0) * -18px), calc(var(--py, 0) * -18px)) scale(1.08);
+  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.mapa-capa.leaflet-container {
+  background: var(--color-paper);
+  font-family: var(--font-body);
+}
+
+.mapa-capa .leaflet-tile-pane {
+  filter: grayscale(1) brightness(var(--mapa-brillo)) contrast(var(--mapa-contraste));
+}
+
+.mapa-luz {
+  background: radial-gradient(
+    520px circle at var(--mx, 50%) var(--my, 40%),
+    rgb(94 211 181 / 0.13),
+    transparent 70%
+  );
+}
+
+.plaza {
+  position: relative;
+  display: block;
+  width: 10px;
+  height: 10px;
+  transition: opacity 0.3s ease;
+}
+
+/* En "Sobre mí" el punto y la etiqueta de la plaza se ocultan: quedan detrás del texto. */
+.mapa-tenue .plaza {
+  opacity: 0;
+}
+
+.plaza-punto,
+.plaza-punto::after {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: var(--color-signal);
+}
+
+.plaza-punto::after {
+  content: "";
+  animation: plaza-pulso 2.4s ease-out infinite;
+}
+
+@keyframes plaza-pulso {
+  from {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+.plaza-nombre {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 13px;
+  color: rgb(230 238 232 / 0.75);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .aparecer {
+  .aparecer,
+  .vista,
+  .mapa-fondo,
+  .plaza-punto::after {
     animation: none;
+  }
+  .mapa-capa {
+    transform: scale(1.08);
+    transition: none;
+  }
+  .plaza,
+  .mapa-fondo {
+    transition: none;
   }
 }

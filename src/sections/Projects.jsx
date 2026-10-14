@@ -3,15 +3,14 @@ import { projects } from '../data/projects'
 
 export default function Projects() {
   return (
-    <section id="proyectos" className="mx-auto max-w-6xl px-5 pb-10 sm:px-8">
-      <h2 className="text-3xl font-extrabold sm:text-4xl">Proyectos</h2>
-      <p className="mt-2 max-w-[60ch]">
-        Cada proyecto parte de un problema que alguien tiene hoy. Aquí cuento qué problema era, qué construí y qué
-        aprendí.
+    <section className="caja py-24">
+      <h2 className="text-2xl font-semibold">Proyectos</h2>
+      <p className="mt-2 max-w-[56ch] text-ink/65">
+        Cada proyecto parte de un problema que alguien tiene hoy.
       </p>
-      <div className="mt-8">
-        {projects.map((p) => (
-          <ProjectEntry key={p.id} project={p} />
+      <div className="mt-16 space-y-28">
+        {projects.map((p, i) => (
+          <ProjectEntry key={p.id} project={p} flip={i % 2 === 1} />
         ))}
       </div>
     </section>
